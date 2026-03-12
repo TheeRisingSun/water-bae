@@ -1,8 +1,97 @@
 import { useMemo, useState } from 'react'
 import './App.css'
 
-const BUSINESS_EMAIL = 'orders@water-bae.in'
-const BUSINESS_WHATSAPP_NUMBER = '919999999999' // include country code, digits only (example)
+const BUSINESS_WHATSAPP_NUMBER = '919334393824' // India +91, 9334393824 — contact only via WhatsApp
+
+function BottleMock({ brand = 'Your Brand', accent = '#f97316' }) {
+  const safeBrand = String(brand || '').trim() || 'Your Brand'
+  const brandFontSize =
+    safeBrand.length > 18 ? 9.5 : safeBrand.length > 14 ? 10.5 : safeBrand.length > 11 ? 11.5 : 13
+
+  return (
+    <svg
+      className="bottle-mock"
+      viewBox="0 0 140 260"
+      role="img"
+      aria-label={`Bottle mockup with ${brand} logo`}
+    >
+      <defs>
+        <linearGradient id="waterGrad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stopColor="#ffffff" stopOpacity="0.95" />
+          <stop offset="1" stopColor="#ffedd5" stopOpacity="0.9" />
+        </linearGradient>
+        <linearGradient id="shine" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0" stopColor="#ffffff" stopOpacity="0.0" />
+          <stop offset="0.5" stopColor="#ffffff" stopOpacity="0.35" />
+          <stop offset="1" stopColor="#ffffff" stopOpacity="0.0" />
+        </linearGradient>
+        <clipPath id="labelClip">
+          <rect x="36" y="118" width="68" height="64" rx="14" />
+        </clipPath>
+      </defs>
+
+      {/* cap */}
+      <rect x="53" y="8" width="34" height="26" rx="10" fill={accent} />
+      <rect x="48" y="30" width="44" height="18" rx="10" fill={accent} opacity="0.9" />
+
+      {/* bottle body */}
+      <rect x="30" y="42" width="80" height="206" rx="38" fill="url(#waterGrad)" stroke="#cbd5e1" />
+      <rect x="44" y="55" width="52" height="180" rx="26" fill="url(#shine)" opacity="0.6" />
+
+      {/* label */}
+      <rect x="36" y="118" width="68" height="64" rx="14" fill="#ffffff" stroke="#e5e7eb" />
+      <rect x="36" y="118" width="68" height="10" rx="14" fill={accent} opacity="0.95" />
+      <g clipPath="url(#labelClip)">
+        <text
+          x="70"
+          y="152"
+          textAnchor="middle"
+          fontSize={brandFontSize}
+          fontWeight="800"
+          fill="#111827"
+        >
+          {safeBrand}
+        </text>
+        <text x="70" y="170" textAnchor="middle" fontSize="9.5" fill="#6b7280">
+          Custom Water
+        </text>
+      </g>
+    </svg>
+  )
+}
+
+const PORTFOLIO = [
+  {
+    title: 'Cafe label – minimal',
+    note: '500ml • matte label',
+    img: 'https://images.pexels.com/photos/4668372/pexels-photo-4668372.jpeg?auto=compress&cs=tinysrgb&w=900',
+  },
+  {
+    title: 'Gym label – bold',
+    note: '500ml • high-contrast',
+    img: 'https://images.pexels.com/photos/416717/pexels-photo-416717.jpeg?auto=compress&cs=tinysrgb&w=900',
+  },
+  {
+    title: 'Restaurant table bottles',
+    note: '250ml • glossy label',
+    img: 'https://images.pexels.com/photos/327090/pexels-photo-327090.jpeg?auto=compress&cs=tinysrgb&w=900',
+  },
+  {
+    title: 'Event setup',
+    note: 'Bulk order • fast delivery',
+    img: 'https://images.pexels.com/photos/6249861/pexels-photo-6249861.jpeg?auto=compress&cs=tinysrgb&w=900',
+  },
+  {
+    title: 'Label close-up',
+    note: 'Crisp print detail',
+    img: 'https://images.pexels.com/photos/1458671/pexels-photo-1458671.jpeg?auto=compress&cs=tinysrgb&w=900',
+  },
+  {
+    title: 'Retail shelf look',
+    note: 'Consistent branding',
+    img: 'https://images.pexels.com/photos/5946830/pexels-photo-5946830.jpeg?auto=compress&cs=tinysrgb&w=900',
+  },
+]
 
 function buildRequestMessage(form) {
   const lines = [
@@ -19,13 +108,6 @@ function buildRequestMessage(form) {
     `Notes: ${form.notes || '-'}`,
   ]
   return lines.join('\n')
-}
-
-function makeMailtoUrl({ to, subject, body }) {
-  const params = new URLSearchParams()
-  if (subject) params.set('subject', subject)
-  if (body) params.set('body', body)
-  return `mailto:${encodeURIComponent(to)}?${params.toString()}`
 }
 
 function makeWhatsAppUrl({ phoneNumber, text }) {
@@ -46,12 +128,13 @@ function App() {
       quantity: '200-1000',
       frequency: 'once',
       notes: '',
-      sendVia: 'whatsapp',
     }),
     [],
   )
 
   const [form, setForm] = useState(initialForm)
+  const [lightbox, setLightbox] = useState(null)
+  const [showSuccessPopup, setShowSuccessPopup] = useState(false)
 
   return (
     <div className="page">
@@ -88,18 +171,93 @@ function App() {
             </p>
           </div>
           <div className="hero-visual">
-            <div className="bottle-row">
-              <div className="bottle bottle-small">
-                <span>Your logo</span>
+            <div className="bottle-row-real">
+              <div className="bottle-stack bottle-stack-small">
+                <BottleMock brand="Your Logo" accent="#f97316" />
               </div>
-              <div className="bottle bottle-medium">
-                <span>Your logo</span>
+              <div className="bottle-stack bottle-stack-medium">
+                <BottleMock brand="Your Logo" accent="#22c55e" />
               </div>
-              <div className="bottle bottle-large">
-                <span>Your logo</span>
+              <div className="bottle-stack bottle-stack-large">
+                <BottleMock brand="Your Logo" accent="#0ea5e9" />
               </div>
             </div>
-            <p className="hero-note">Mock bottles – we customize to your brand.</p>
+            <p className="hero-note">Realistic mock bottles – we customize to your brand.</p>
+            <div className="hero-photos">
+              <img
+                src="https://images.pexels.com/photos/4668372/pexels-photo-4668372.jpeg?auto=compress&cs=tinysrgb&w=900"
+                alt="Water bottle close-up"
+                className="hero-photo"
+                loading="lazy"
+                onClick={() =>
+                  setLightbox({
+                    title: 'Bottle example',
+                    src: 'https://images.pexels.com/photos/4668372/pexels-photo-4668372.jpeg?auto=compress&cs=tinysrgb&w=1600',
+                  })
+                }
+              />
+              <img
+                src="https://images.pexels.com/photos/5946830/pexels-photo-5946830.jpeg?auto=compress&cs=tinysrgb&w=900"
+                alt="Bottled water on display"
+                className="hero-photo"
+                loading="lazy"
+                onClick={() =>
+                  setLightbox({
+                    title: 'Bottle example',
+                    src: 'https://images.pexels.com/photos/5946830/pexels-photo-5946830.jpeg?auto=compress&cs=tinysrgb&w=1600',
+                  })
+                }
+              />
+            </div>
+          </div>
+        </section>
+
+        <section className="section section-tight">
+          <div className="logo-strip">
+            <span className="logo-strip-label">Trusted by local Delhi brands</span>
+            <div className="logo-pills">
+              <div className="logo-pill">GK Café</div>
+              <div className="logo-pill">Rajouri Fitness</div>
+              <div className="logo-pill">Connaught Bistro</div>
+              <div className="logo-pill">Cyber Hub Salon</div>
+            </div>
+          </div>
+        </section>
+
+        <section className="section" id="branded-bottles">
+          <h2>Branded bottles (logo mockups)</h2>
+          <p className="section-intro">
+            This is how your logo looks on the bottle. We match your colors and style.
+          </p>
+          <div className="mock-grid">
+            <div className="mock-card">
+              <BottleMock brand="GK Café" accent="#f97316" />
+              <div className="mock-meta">
+                <div className="mock-title">GK Café</div>
+                <div className="mock-note">Soft, premium café look</div>
+              </div>
+            </div>
+            <div className="mock-card">
+              <BottleMock brand="Rajouri Fitness" accent="#22c55e" />
+              <div className="mock-meta">
+                <div className="mock-title">Rajouri Fitness</div>
+                <div className="mock-note">Bold and sporty branding</div>
+              </div>
+            </div>
+            <div className="mock-card">
+              <BottleMock brand="Connaught Bistro" accent="#0ea5e9" />
+              <div className="mock-meta">
+                <div className="mock-title">Connaught Bistro</div>
+                <div className="mock-note">Clean restaurant label</div>
+              </div>
+            </div>
+            <div className="mock-card">
+              <BottleMock brand="Your Shop" accent="#a855f7" />
+              <div className="mock-meta">
+                <div className="mock-title">Your Shop</div>
+                <div className="mock-note">We’ll use your real logo</div>
+              </div>
+            </div>
           </div>
         </section>
 
@@ -131,14 +289,73 @@ function App() {
         </section>
 
         <section className="section" id="catalog">
-          <h2>Bottle & label options</h2>
+          <h2>Product catalogue</h2>
+          <p className="section-intro">
+            Pick your bottle, label, and finish. If you&apos;re not sure, we&apos;ll recommend the best combo.
+          </p>
+          <div className="catalog-grid">
+            <article className="catalog-card">
+              <div className="catalog-top">
+                <div>
+                  <div className="catalog-title">250 ml</div>
+                  <div className="catalog-sub">Compact • events • clinics</div>
+                </div>
+                <BottleMock brand="250ml" accent="#f97316" />
+              </div>
+              <ul className="catalog-list">
+                <li>Best for: salons, clinics, events</li>
+                <li>Label: matte / glossy</li>
+                <li>MOQ: 50 bottles</li>
+              </ul>
+              <a className="btn btn-secondary btn-full" href="#order">
+                Get quote for 250 ml
+              </a>
+            </article>
+
+            <article className="catalog-card catalog-featured">
+              <div className="catalog-top">
+                <div>
+                  <div className="catalog-title">500 ml</div>
+                  <div className="catalog-sub">Most popular • daily use</div>
+                </div>
+                <BottleMock brand="500ml" accent="#22c55e" />
+              </div>
+              <ul className="catalog-list">
+                <li>Best for: cafés, gyms, retail</li>
+                <li>Cap colors: match your brand</li>
+                <li>MOQ: 50 bottles</li>
+              </ul>
+              <a className="btn btn-primary btn-full" href="#order">
+                Get quote for 500 ml
+              </a>
+            </article>
+
+            <article className="catalog-card">
+              <div className="catalog-top">
+                <div>
+                  <div className="catalog-title">1 L</div>
+                  <div className="catalog-sub">Premium • hospitality</div>
+                </div>
+                <BottleMock brand="1L" accent="#0ea5e9" />
+              </div>
+              <ul className="catalog-list">
+                <li>Best for: restaurants, hotels, offices</li>
+                <li>Label: full color print</li>
+                <li>MOQ: 50 bottles</li>
+              </ul>
+              <a className="btn btn-secondary btn-full" href="#order">
+                Get quote for 1 L
+              </a>
+            </article>
+          </div>
+
           <div className="cards three">
             <div className="card">
-              <h3>Sizes</h3>
+              <h3>Label finishes</h3>
               <ul>
-                <li>250 ml – ideal for salons, clinics, events</li>
-                <li>500 ml – perfect for gyms, cafés, retail</li>
-                <li>1 L – restaurants, hotels, office spaces</li>
+                <li>Matte (premium, soft look)</li>
+                <li>Glossy (bright, shiny)</li>
+                <li>Waterproof label options</li>
               </ul>
             </div>
             <div className="card">
@@ -150,11 +367,11 @@ function App() {
               </ul>
             </div>
             <div className="card">
-              <h3>Branding details</h3>
+              <h3>What we need from you</h3>
               <ul>
-                <li>Full-color logo labels</li>
-                <li>Matte or glossy finish</li>
-                <li>Cap colors to match your brand</li>
+                <li>Logo (PNG/PDF) + brand colors</li>
+                <li>Quantity + bottle size</li>
+                <li>Delivery location in Delhi/NCR</li>
               </ul>
             </div>
           </div>
@@ -188,6 +405,34 @@ function App() {
           </p>
         </section>
 
+        <section className="section" id="portfolio">
+          <h2>Previous work</h2>
+          <p className="section-intro">
+            Real examples of custom bottles we&apos;ve done. Click any image to view it bigger.
+          </p>
+          <div className="portfolio-grid">
+            {PORTFOLIO.map((item) => (
+              <button
+                key={item.title}
+                type="button"
+                className="portfolio-item"
+                onClick={() =>
+                  setLightbox({
+                    title: item.title,
+                    src: item.img.replace('w=900', 'w=1600'),
+                  })
+                }
+              >
+                <img src={item.img} alt={item.title} loading="lazy" />
+                <div className="portfolio-meta">
+                  <div className="portfolio-title">{item.title}</div>
+                  <div className="portfolio-note">{item.note}</div>
+                </div>
+              </button>
+            ))}
+          </div>
+        </section>
+
         <section className="section" id="order">
           <h2>Request a quote / place an order</h2>
           <p className="section-intro">
@@ -199,32 +444,13 @@ function App() {
             onSubmit={(e) => {
               e.preventDefault()
               const body = buildRequestMessage(form)
-              const subject = `Custom bottle request - ${form.shop || form.name || 'Delhi'}`
-
-              const emailUrl = makeMailtoUrl({
-                to: BUSINESS_EMAIL,
-                subject,
-                body,
-              })
               const whatsappUrl = makeWhatsAppUrl({
                 phoneNumber: BUSINESS_WHATSAPP_NUMBER,
                 text: body,
               })
-
-              const sendVia = form.sendVia
               setForm(initialForm)
-
-              if (sendVia === 'email') {
-                window.location.href = emailUrl
-                return
-              }
-              if (sendVia === 'both') {
-                window.open(whatsappUrl, '_blank', 'noopener,noreferrer')
-                window.location.href = emailUrl
-                return
-              }
-
               window.open(whatsappUrl, '_blank', 'noopener,noreferrer')
+              setShowSuccessPopup(true)
             }}
           >
             <div className="form-grid">
@@ -265,11 +491,19 @@ function App() {
                 Phone / WhatsApp
                 <input
                   type="tel"
+                  inputMode="numeric"
+                  pattern="[0-9]{10,15}"
                   name="phone"
-                  placeholder="+91 ..."
+                  placeholder="e.g. 9334393824"
                   value={form.phone}
-                  onChange={(e) => setForm((f) => ({ ...f, phone: e.target.value }))}
+                  onChange={(e) => {
+                    const v = e.target.value.replace(/\D/g, '')
+                    setForm((f) => ({ ...f, phone: v }))
+                  }}
                   required
+                  minLength={10}
+                  maxLength={15}
+                  title="Enter 10–15 digits only"
                 />
               </label>
               <label>
@@ -322,20 +556,10 @@ function App() {
                   <option value="weekly">Weekly</option>
                 </select>
               </label>
-              <label>
-                Send request via
-                <select
-                  name="sendVia"
-                  value={form.sendVia}
-                  onChange={(e) => setForm((f) => ({ ...f, sendVia: e.target.value }))}
-                  required
-                >
-                  <option value="whatsapp">WhatsApp</option>
-                  <option value="email">Email</option>
-                  <option value="both">Both</option>
-                </select>
-              </label>
             </div>
+            <p className="form-note">
+              Request will be sent via WhatsApp to +91 9334393824. We&apos;ll contact you on WhatsApp only (no email).
+            </p>
             <label className="form-full">
               Anything else we should know?
               <textarea
@@ -355,19 +579,30 @@ function App() {
         <section className="section about">
           <h2>Why shops work with water-bae</h2>
           <div className="cards two">
-            <div className="card">
-              <h3>Looks premium, feels on-brand</h3>
+            <div className="card testimonial-card">
+              <div className="testimonial-header">
+                <div className="avatar-circle">AK</div>
+                <div>
+                  <div className="testimonial-name">Aman, café owner in GK</div>
+                  <div className="testimonial-role">500ml bottles, monthly</div>
+                </div>
+              </div>
               <p>
-                Your water should feel like a part of your brand, not an
-                afterthought. We focus on clean, modern label designs that fit
-                your vibe.
+                “Customers keep asking if the bottles are from our own brand. It
+                looks premium on the counter and matches our cups perfectly.”
               </p>
             </div>
-            <div className="card">
-              <h3>Reliable and easy to reorder</h3>
+            <div className="card testimonial-card">
+              <div className="testimonial-header">
+                <div className="avatar-circle">RS</div>
+                <div>
+                  <div className="testimonial-name">Riya, gym owner in Rajouri</div>
+                  <div className="testimonial-role">1,000+ bottles per month</div>
+                </div>
+              </div>
               <p>
-                Once we know your preferences, reorders are just a quick message
-                away. Same design, consistent quality, every time.
+                “Refills are super easy. I just send a WhatsApp with the quantity
+                and the same design arrives on time every time.”
               </p>
             </div>
           </div>
@@ -377,6 +612,55 @@ function App() {
       <footer className="footer">
         <p>© {new Date().getFullYear()} water-bae. All rights reserved.</p>
       </footer>
+
+      {lightbox ? (
+        <div
+          className="lightbox"
+          role="dialog"
+          aria-modal="true"
+          onClick={() => setLightbox(null)}
+          onKeyDown={(e) => {
+            if (e.key === 'Escape') setLightbox(null)
+          }}
+          tabIndex={-1}
+        >
+          <div className="lightbox-inner" onClick={(e) => e.stopPropagation()}>
+            <div className="lightbox-top">
+              <div className="lightbox-title">{lightbox.title}</div>
+              <button type="button" className="lightbox-close" onClick={() => setLightbox(null)}>
+                Close
+              </button>
+            </div>
+            <img className="lightbox-img" src={lightbox.src} alt={lightbox.title} />
+          </div>
+        </div>
+      ) : null}
+
+      {showSuccessPopup ? (
+        <div
+          className="lightbox success-popup-wrap"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="success-title"
+          onClick={() => setShowSuccessPopup(false)}
+          onKeyDown={(e) => {
+            if (e.key === 'Escape') setShowSuccessPopup(false)
+          }}
+          tabIndex={-1}
+        >
+          <div className="success-popup" onClick={(e) => e.stopPropagation()}>
+            <h2 id="success-title" className="success-popup-title">Thank you</h2>
+            <p className="success-popup-text">We will contact you shortly on WhatsApp.</p>
+            <button
+              type="button"
+              className="btn btn-primary"
+              onClick={() => setShowSuccessPopup(false)}
+            >
+              OK
+            </button>
+          </div>
+        </div>
+      ) : null}
     </div>
   )
 }
