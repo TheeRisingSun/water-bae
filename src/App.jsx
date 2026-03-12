@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react'
 import './App.css'
 
-const BUSINESS_WHATSAPP_NUMBER = '919334393824' // India +91, 9334393824 — contact only via WhatsApp
+const BUSINESS_WHATSAPP_NUMBER = '919311867504' // India +91, 9311867504 — contact only via WhatsApp
 
 function BottleMock({ brand = 'Your Brand', accent = '#f97316' }) {
   const safeBrand = String(brand || '').trim() || 'Your Brand'
@@ -492,9 +492,9 @@ function App() {
                 <input
                   type="tel"
                   inputMode="numeric"
-                  pattern="[0-9]{10,15}"
+                  pattern="[0-9]{10}"
                   name="phone"
-                  placeholder="e.g. 9334393824"
+                  placeholder="e.g. 9311867504"
                   value={form.phone}
                   onChange={(e) => {
                     const v = e.target.value.replace(/\D/g, '')
@@ -502,8 +502,8 @@ function App() {
                   }}
                   required
                   minLength={10}
-                  maxLength={15}
-                  title="Enter 10–15 digits only"
+                  maxLength={10}
+                  title="Enter exactly 10 digits"
                 />
               </label>
               <label>
@@ -558,7 +558,7 @@ function App() {
               </label>
             </div>
             <p className="form-note">
-              Request will be sent via WhatsApp to +91 9334393824. We&apos;ll contact you on WhatsApp only (no email).
+              Request will be sent via WhatsApp to +91 9311867504. We&apos;ll contact you on WhatsApp only (no email).
             </p>
             <label className="form-full">
               Anything else we should know?
